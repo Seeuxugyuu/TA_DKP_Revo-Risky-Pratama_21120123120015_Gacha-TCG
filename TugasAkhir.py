@@ -117,7 +117,7 @@ class PokemonGachaGame:
 
 def main():
     root = tk.Tk()
-    game = PokemonGachaGame(root)
+    root.game = PokemonGachaGame(root)
     root.mainloop()
 
 if __name__ == "__main__":
