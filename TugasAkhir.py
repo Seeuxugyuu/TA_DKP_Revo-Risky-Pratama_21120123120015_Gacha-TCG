@@ -7,7 +7,11 @@ class PokemonGachaGame:
         self.master = master
         self.master.title("Pokemon Gacha TCG")
         self.master.geometry("400x500")
+        
+        self.card_collection = {}
+        self.create_login_frame()
 
+    def create_login_frame(self):
         self.login_frame = tk.Frame(self.master)
         self.login_frame.pack(pady=20)
 
@@ -23,9 +27,6 @@ class PokemonGachaGame:
 
         self.login_button = tk.Button(self.login_frame, text="Login", command=self.login)
         self.login_button.grid(row=2, columnspan=2, padx=10, pady=10)
-
-        self.gacha_frame = None
-        self.card_collection = {}
 
     def login(self):
         username = self.username_entry.get()
@@ -59,6 +60,9 @@ class PokemonGachaGame:
 
         self.collection_button = tk.Button(self.gacha_frame, text="Lihat Koleksi", command=self.show_collection)
         self.collection_button.pack(pady=10)
+
+        self.logout_button = tk.Button(self.gacha_frame, text="Log Out", command=self.logout)
+        self.logout_button.pack(pady=10)
 
     def gacha(self):
         selected_indices = self.pack_listbox.curselection()
@@ -101,19 +105,31 @@ class PokemonGachaGame:
             self.card_collection[card] = 1
 
     def show_collection(self):
-        collection_window = tk.Toplevel(self.master)
-        collection_window.title("Koleksi Kartu")
-        collection_window.geometry("300x400")
+        self.collection_window = tk.Toplevel(self.master)
+        self.collection_window.title("Koleksi Kartu")
+        self.collection_window.geometry("300x450")
 
-        collection_textbox = tk.Text(collection_window, width=40, height=20, wrap=tk.WORD)
-        collection_textbox.pack(pady=10)
+        self.collection_textbox = tk.Text(self.collection_window, width=40, height=20, wrap=tk.WORD)
+        self.collection_textbox.pack(pady=10)
 
-        collection_textbox.insert(tk.END, "Daftar Kartu yang Didapat:\n")
+        self.collection_textbox.insert(tk.END, "Daftar Kartu yang Didapat:\n")
         for card, count in self.card_collection.items():
-            collection_textbox.insert(tk.END, f"{card}: {count}\n")
+            self.collection_textbox.insert(tk.END, f"{card}: {count}\n")
 
-        close_button = tk.Button(collection_window, text="Tutup", command=collection_window.destroy)
-        close_button.pack(pady=10)
+        self.clear_button = tk.Button(self.collection_window, text="Hapus Semua", command=self.clear_collection)
+        self.clear_button.pack(pady=10)
+
+        self.close_button = tk.Button(self.collection_window, text="Tutup", command=self.collection_window.destroy)
+        self.close_button.pack(pady=10)
+
+    def clear_collection(self):
+        self.card_collection.clear()
+        self.collection_textbox.delete(1.0, tk.END)
+        self.collection_textbox.insert(tk.END, "Daftar Kartu yang Didapat:\n")
+
+    def logout(self):
+        self.gacha_frame.destroy()
+        self.create_login_frame()
 
 def main():
     root = tk.Tk()
